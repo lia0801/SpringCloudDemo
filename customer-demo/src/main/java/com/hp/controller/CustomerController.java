@@ -1,5 +1,6 @@
 package com.hp.controller;
 
+import com.hp.client.UserClient;
 import com.hp.pojo.User;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -17,11 +18,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("customer")
-@DefaultProperties(defaultFallback = "defaultFallback")
+//@DefaultProperties(defaultFallback = "defaultFallback")
 public class CustomerController {
 
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
 
     @Autowired
     private DiscoveryClient discoveryClient;//eureka客户端
@@ -63,17 +64,25 @@ public class CustomerController {
 //        return "网络拥堵！！！！！！";
 //    }
 
-    //Hystrix第二种使用
+//    //Hystrix第二种使用
+//    @GetMapping("{id}")
+//    @HystrixCommand
+//    public String  queryById(@PathVariable("id") Long id) {
+//        String url="http://user-service/user/"+id;
+//        String  user = restTemplate.getForObject(url, String.class);
+//        return user;
+//    }
+//    //当发生异常时调用
+//    public String defaultFallback(){
+//        return "网络拥堵！！！！！！222";
+//    }
+
+    @Autowired
+    UserClient userClient;
+
     @GetMapping("{id}")
-    @HystrixCommand
-    public String  queryById(@PathVariable("id") Long id) {
-        String url="http://user-service/user/"+id;
-        String  user = restTemplate.getForObject(url, String.class);
-        return user;
-    }
-    //当发生异常时调用
-    public String defaultFallback(){
-        return "网络拥堵！！！！！！222";
+    public User  queryById(@PathVariable("id") Long id) {
+        return userClient.queryById(id);
     }
 
 

@@ -13,6 +13,7 @@
         <module>customer-demo</module>
         <module>Eureka-Server</module>
         <module>eureka-server</module>
+        <module>zuuI-Server</module>
     </modules>
 
     <parent>

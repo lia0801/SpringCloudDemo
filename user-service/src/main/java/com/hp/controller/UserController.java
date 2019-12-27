@@ -17,7 +17,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User queryById(@PathVariable("id") Long id) throws InterruptedException {
-        Thread.sleep(4000); //睡眠四秒，测试熔断
+       // Thread.sleep(4000); //睡眠四秒，测试熔断
         return this.userService.queryById(id);
     }
 }
