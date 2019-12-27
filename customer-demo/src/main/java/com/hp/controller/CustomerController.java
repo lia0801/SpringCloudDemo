@@ -1,6 +1,9 @@
 package com.hp.controller;
 
 import com.hp.pojo.User;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.ribbon.proxy.annotation.Hystrix;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("customer")
+@DefaultProperties(defaultFallback = "defaultFallback")
 public class CustomerController {
 
     @Autowired
@@ -39,12 +43,38 @@ public class CustomerController {
 //        return user;
 //    }
 
-    @GetMapping("{id}")
-    public User queryById(@PathVariable("id") Long id) {
+//    @GetMapping("{id}")
+//    public User queryById(@PathVariable("id") Long id) {
+//
+//        String url="http://user-service/user/"+id;
+//        User user = restTemplate.getForObject(url, User.class);
+//        return user;
+//    }
 
+//    //Hystrix第一种使用
+//    @GetMapping("{id}")
+//    @HystrixCommand(fallbackMethod = "queryback")  //方法使用熔断器
+//    public String  queryById(@PathVariable("id") Long id) {
+//        String url="http://user-service/user/"+id;
+//        String  user = restTemplate.getForObject(url, String.class);
+//        return user;
+//    }
+//    public String queryback(Long id){
+//        return "网络拥堵！！！！！！";
+//    }
+
+    //Hystrix第二种使用
+    @GetMapping("{id}")
+    @HystrixCommand
+    public String  queryById(@PathVariable("id") Long id) {
         String url="http://user-service/user/"+id;
-        User user = restTemplate.getForObject(url, User.class);
+        String  user = restTemplate.getForObject(url, String.class);
         return user;
     }
+    //当发生异常时调用
+    public String defaultFallback(){
+        return "网络拥堵！！！！！！222";
+    }
+
 
 }
